@@ -82,14 +82,12 @@ const { data, error } = await supabase
 .limit(1)
 .maybeSingle()
 
-```
   if (!error && data) {
     return data as Profile
   }
 }
 
 return readLs(KEYS.profile, SEED_PROFILE)
-```
 
 },
 
@@ -104,7 +102,6 @@ updated_at: new Date().toISOString(),
 .select()
 .single()
 
-```
   if (error) throw error
 
   return data as Profile
@@ -112,7 +109,6 @@ updated_at: new Date().toISOString(),
 
 writeLs(KEYS.profile, profile)
 return profile
-```
 
 },
 
@@ -125,7 +121,6 @@ const { data, error } = await supabase
 ascending: true,
 })
 
-```
   if (!error && data) {
     return (
       data as Record<string, unknown>[]
@@ -134,7 +129,6 @@ ascending: true,
 }
 
 return readLs(KEYS.projects, SEED_PROJECTS)
-```
 
 },
 
@@ -144,7 +138,6 @@ const payload: Record<string, unknown> = {
 ...project,
 }
 
-```
   if (!project.id) {
     delete payload.id
   }
@@ -194,7 +187,6 @@ const next = list.some(
 writeLs(KEYS.projects, next)
 
 return project
-```
 
 },
 
@@ -205,7 +197,6 @@ const { error } = await supabase
 .delete()
 .eq("id", id)
 
-```
   if (error) throw error
 
   return
@@ -218,7 +209,6 @@ writeLs(
     SEED_PROJECTS,
   ).filter((p) => p.id !== id),
 )
-```
 
 },
 
@@ -231,7 +221,6 @@ pid: id,
 },
 )
 
-```
   if (error) throw error
 
   return Number(data ?? 0)
@@ -254,7 +243,6 @@ writeLs(KEYS.projects, list)
 return (
   list.find((p) => p.id === id)?.stars ?? 0
 )
-```
 
 },
 
@@ -267,7 +255,6 @@ const { data, error } = await supabase
 ascending: false,
 })
 
-```
   if (!error && data) {
     return (
       data as Record<string, unknown>[]
@@ -279,7 +266,6 @@ return readLs(
   KEYS.guestbook,
   SEED_GUESTS,
 )
-```
 
 },
 
@@ -293,7 +279,6 @@ const { data, error } = await supabase
 .select()
 .single()
 
-```
   if (error) throw error
 
   return asGuest(
@@ -316,7 +301,6 @@ writeLs(KEYS.guestbook, [
 ])
 
 return created
-```
 
 },
 
@@ -327,7 +311,6 @@ const { error } = await supabase
 .delete()
 .eq("id", id)
 
-```
   if (error) throw error
 
   return
@@ -340,7 +323,6 @@ writeLs(
     SEED_GUESTS,
   ).filter((g) => g.id !== id),
 )
-```
 
 },
 
@@ -353,7 +335,6 @@ const { data, error } = await supabase
 ascending: false,
 })
 
-```
   if (error) {
     console.error(
       "Supabase inbox error:",
@@ -371,7 +352,6 @@ return readLs(
   KEYS.inbox,
   SEED_INBOX,
 )
-```
 
 },
 
@@ -395,7 +375,6 @@ read: false,
 .select()
 .single()
 
-```
   if (error) {
     console.error(
       "Supabase message error:",
@@ -426,7 +405,6 @@ writeLs(KEYS.inbox, [
 ])
 
 return created
-```
 
 },
 
@@ -437,7 +415,6 @@ const { error } = await supabase
 .delete()
 .eq("id", id)
 
-```
   if (error) throw error
 
   return
@@ -450,7 +427,6 @@ writeLs(
     SEED_INBOX,
   ).filter((m) => m.id !== id),
 )
-```
 
 },
 
@@ -464,7 +440,6 @@ await supabase
 "00000000-0000-0000-0000-000000000000",
 )
 
-```
   await supabase
     .from("profile")
     .upsert(SEED_PROFILE)
@@ -487,7 +462,6 @@ writeLs(
   KEYS.projects,
   SEED_PROJECTS,
 )
-```
 
 },
 }
