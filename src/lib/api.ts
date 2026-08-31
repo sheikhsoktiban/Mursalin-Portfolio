@@ -28,8 +28,12 @@ id: String(row.id),
 title: String(row.title ?? ""),
 category: row.category as Project["category"],
 description: String(row.description ?? ""),
-highlights: Array.isArray(row.highlights) ? (row.highlights as string[]) : [],
-tags: Array.isArray(row.tags) ? (row.tags as string[]) : [],
+highlights: Array.isArray(row.highlights)
+? (row.highlights as string[])
+: [],
+tags: Array.isArray(row.tags)
+? (row.tags as string[])
+: [],
 github: String(row.github ?? ""),
 stars: Number(row.stars ?? 0),
 sort_order: Number(row.sort_order ?? 0),
@@ -44,7 +48,9 @@ role: String(row.role ?? ""),
 message: String(row.message ?? ""),
 emoji: String(row.emoji ?? "🚀"),
 tag: String(row.tag ?? "Guest"),
-created_at: String(row.created_at ?? new Date().toISOString()),
+created_at: String(
+row.created_at ?? new Date().toISOString(),
+),
 }
 }
 
@@ -53,11 +59,15 @@ return {
 id: String(row.id),
 name: String(row.name ?? ""),
 email: String(row.email ?? ""),
-category: String(row.category ?? row.service_category ?? ""),
+category: String(
+row.category ?? row.service_category ?? "",
+),
 subject: String(row.subject ?? ""),
 message: String(row.message ?? ""),
 read: Boolean(row.read),
-created_at: String(row.created_at ?? new Date().toISOString()),
+created_at: String(
+row.created_at ?? new Date().toISOString(),
+),
 }
 }
 
@@ -73,7 +83,9 @@ const { data, error } = await supabase
 .maybeSingle()
 
 ```
-  if (!error && data) return data as Profile
+  if (!error && data) {
+    return data as Profile
+  }
 }
 
 return readLs(KEYS.profile, SEED_PROFILE)
@@ -94,6 +106,7 @@ updated_at: new Date().toISOString(),
 
 ```
   if (error) throw error
+
   return data as Profile
 }
 
@@ -108,11 +121,15 @@ if (supabase) {
 const { data, error } = await supabase
 .from("projects")
 .select("*")
-.order("sort_order", { ascending: true })
+.order("sort_order", {
+ascending: true,
+})
 
 ```
   if (!error && data) {
-    return (data as Record<string, unknown>[]).map(asProject)
+    return (
+      data as Record<string, unknown>[]
+    ).map(asProject)
   }
 }
 
@@ -123,10 +140,14 @@ return readLs(KEYS.projects, SEED_PROJECTS)
 
 async saveProject(project: Project): Promise<Project> {
 if (supabase) {
-const payload: Record<string, unknown> = { ...project }
+const payload: Record<string, unknown> = {
+...project,
+}
 
 ```
-  if (!project.id) delete payload.id
+  if (!project.id) {
+    delete payload.id
+  }
 
   const { data, error } = await supabase
     .from("projects")
@@ -135,10 +156,16 @@ const payload: Record<string, unknown> = { ...project }
     .single()
 
   if (error) throw error
-  return asProject(data as Record<string, unknown>)
+
+  return asProject(
+    data as Record<string, unknown>,
+  )
 }
 
-const list = readLs(KEYS.projects, SEED_PROJECTS)
+const list = readLs(
+  KEYS.projects,
+  SEED_PROJECTS,
+)
 
 if (!project.id) {
   const created = {
@@ -146,15 +173,26 @@ if (!project.id) {
     id: crypto.randomUUID(),
   }
 
-  writeLs(KEYS.projects, [created, ...list])
+  writeLs(KEYS.projects, [
+    created,
+    ...list,
+  ])
+
   return created
 }
 
-const next = list.some((p) => p.id === project.id)
-  ? list.map((p) => (p.id === project.id ? project : p))
+const next = list.some(
+  (p) => p.id === project.id,
+)
+  ? list.map((p) =>
+      p.id === project.id
+        ? project
+        : p,
+    )
   : [project, ...list]
 
 writeLs(KEYS.projects, next)
+
 return project
 ```
 
@@ -169,12 +207,16 @@ const { error } = await supabase
 
 ```
   if (error) throw error
+
   return
 }
 
 writeLs(
   KEYS.projects,
-  readLs(KEYS.projects, SEED_PROJECTS).filter((p) => p.id !== id),
+  readLs(
+    KEYS.projects,
+    SEED_PROJECTS,
+  ).filter((p) => p.id !== id),
 )
 ```
 
@@ -184,23 +226,34 @@ async starProject(id: string): Promise<number> {
 if (supabase) {
 const { data, error } = await supabase.rpc(
 "increment_project_stars",
-{ pid: id },
+{
+pid: id,
+},
 )
 
 ```
   if (error) throw error
+
   return Number(data ?? 0)
 }
 
-const list = readLs(KEYS.projects, SEED_PROJECTS).map((p) =>
+const list = readLs(
+  KEYS.projects,
+  SEED_PROJECTS,
+).map((p) =>
   p.id === id
-    ? { ...p, stars: p.stars + 1 }
+    ? {
+        ...p,
+        stars: p.stars + 1,
+      }
     : p,
 )
 
 writeLs(KEYS.projects, list)
 
-return list.find((p) => p.id === id)?.stars ?? 0
+return (
+  list.find((p) => p.id === id)?.stars ?? 0
+)
 ```
 
 },
@@ -210,15 +263,22 @@ if (supabase) {
 const { data, error } = await supabase
 .from("guestbook")
 .select("*")
-.order("created_at", { ascending: false })
+.order("created_at", {
+ascending: false,
+})
 
 ```
   if (!error && data) {
-    return (data as Record<string, unknown>[]).map(asGuest)
+    return (
+      data as Record<string, unknown>[]
+    ).map(asGuest)
   }
 }
 
-return readLs(KEYS.guestbook, SEED_GUESTS)
+return readLs(
+  KEYS.guestbook,
+  SEED_GUESTS,
+)
 ```
 
 },
@@ -235,7 +295,10 @@ const { data, error } = await supabase
 
 ```
   if (error) throw error
-  return asGuest(data as Record<string, unknown>)
+
+  return asGuest(
+    data as Record<string, unknown>,
+  )
 }
 
 const created: GuestNote = {
@@ -244,10 +307,13 @@ const created: GuestNote = {
   created_at: new Date().toISOString(),
 }
 
-writeLs(
-  KEYS.guestbook,
-  [created, ...readLs(KEYS.guestbook, SEED_GUESTS)],
-)
+writeLs(KEYS.guestbook, [
+  created,
+  ...readLs(
+    KEYS.guestbook,
+    SEED_GUESTS,
+  ),
+])
 
 return created
 ```
@@ -263,14 +329,16 @@ const { error } = await supabase
 
 ```
   if (error) throw error
+
   return
 }
 
 writeLs(
   KEYS.guestbook,
-  readLs(KEYS.guestbook, SEED_GUESTS).filter(
-    (g) => g.id !== id,
-  ),
+  readLs(
+    KEYS.guestbook,
+    SEED_GUESTS,
+  ).filter((g) => g.id !== id),
 )
 ```
 
@@ -281,21 +349,37 @@ if (supabase) {
 const { data, error } = await supabase
 .from("messages")
 .select("*")
-.order("created_at", { ascending: false })
+.order("created_at", {
+ascending: false,
+})
 
 ```
-  if (error) return []
+  if (error) {
+    console.error(
+      "Supabase inbox error:",
+      error,
+    )
+    return []
+  }
 
-  return (data as Record<string, unknown>[]).map(asMessage)
+  return (
+    data as Record<string, unknown>[]
+  ).map(asMessage)
 }
 
-return readLs(KEYS.inbox, SEED_INBOX)
+return readLs(
+  KEYS.inbox,
+  SEED_INBOX,
+)
 ```
 
 },
 
 async addMessage(
-msg: Omit<InboxMessage, "id" | "created_at" | "read">,
+msg: Omit<
+InboxMessage,
+"id" | "created_at" | "read"
+>,
 ): Promise<InboxMessage> {
 if (supabase) {
 const { data, error } = await supabase
@@ -313,11 +397,17 @@ read: false,
 
 ```
   if (error) {
-    console.error("Supabase message error:", error)
+    console.error(
+      "Supabase message error:",
+      error,
+    )
+
     throw new Error(error.message)
   }
 
-  return asMessage(data as Record<string, unknown>)
+  return asMessage(
+    data as Record<string, unknown>,
+  )
 }
 
 const created: InboxMessage = {
@@ -327,10 +417,13 @@ const created: InboxMessage = {
   created_at: new Date().toISOString(),
 }
 
-writeLs(
-  KEYS.inbox,
-  [created, ...readLs(KEYS.inbox, SEED_INBOX)],
-)
+writeLs(KEYS.inbox, [
+  created,
+  ...readLs(
+    KEYS.inbox,
+    SEED_INBOX,
+  ),
+])
 
 return created
 ```
@@ -346,14 +439,16 @@ const { error } = await supabase
 
 ```
   if (error) throw error
+
   return
 }
 
 writeLs(
   KEYS.inbox,
-  readLs(KEYS.inbox, SEED_INBOX).filter(
-    (m) => m.id !== id,
-  ),
+  readLs(
+    KEYS.inbox,
+    SEED_INBOX,
+  ).filter((m) => m.id !== id),
 )
 ```
 
@@ -383,8 +478,15 @@ await supabase
   return
 }
 
-writeLs(KEYS.profile, SEED_PROFILE)
-writeLs(KEYS.projects, SEED_PROJECTS)
+writeLs(
+  KEYS.profile,
+  SEED_PROFILE,
+)
+
+writeLs(
+  KEYS.projects,
+  SEED_PROJECTS,
+)
 ```
 
 },
