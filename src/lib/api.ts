@@ -365,12 +365,11 @@ if (supabase) {
 const { data, error } = await supabase
 .from("messages")
 .insert({
-name: msg.name,
-email: msg.email,
-subject: msg.subject,
-message: msg.message,
-service_category: msg.category,
-read: false,
+  name: msg.name,
+  email: msg.email,
+  subject: msg.subject,
+  message: msg.message,
+  read: false,
 })
 .select()
 .single()
