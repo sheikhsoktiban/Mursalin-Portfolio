@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mohammad Mursalin | Backend Software Engineer</title>
+    <meta
+      name="description"
+      content="Mohammad Mursalin — Backend Software Engineer. Java, Spring Boot, JWT, OAuth2, PostgreSQL, MongoDB, Docker, and LangChain."
+    />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem("mm_color_mode") || "dark"
+          var dark =
+            m === "light"
+              ? false
+              : m === "system"
+                ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                : true
+          document.documentElement.classList.remove("dark", "light")
+          document.documentElement.classList.add(dark ? "dark" : "light")
+          document.documentElement.style.colorScheme = dark ? "dark" : "light"
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.setAttribute("content", dark ? "#000000" : "#f4f4f1")
+        } catch (e) {
+          document.documentElement.classList.remove("light")
+          document.documentElement.classList.add("dark")
+        }
+      })()
+    </script>
+  </head>
+  <body class="min-h-screen bg-page text-ink antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
